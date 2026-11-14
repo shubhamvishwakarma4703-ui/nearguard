@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Account, JsonRpcProvider, KeyPairSigner } from "near-api-js";
 import { NEAR } from "near-api-js/tokens";
+import Scene3D from "./Scene3D.jsx";
 import "./App.css";
 
 const LIMIT = 10;
@@ -98,7 +99,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="bg" />
+      <div className="bg" /><Scene3D />
       <motion.h1 initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
         Near<span>Guard</span>
       </motion.h1>
@@ -167,3 +168,4 @@ export default function App() {
     </div>
   );
 }
+
