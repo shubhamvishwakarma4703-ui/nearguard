@@ -43,26 +43,28 @@ html::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 .inputs button:active{transform:scale(.96)}
 .card{transition:transform .12s ease-out,border-color .3s,box-shadow .3s;transform-style:preserve-3d;will-change:transform}
 .app{perspective:1200px}
-body::before{background:radial-gradient(circle,#7c5cff55,transparent 65%)}
-body::after{background:linear-gradient(90deg,transparent,#00e5ffaa,transparent)}
-.bg::before{background-image:linear-gradient(#7c5cff22 1px,transparent 1px),linear-gradient(90deg,#7c5cff22 1px,transparent 1px)}
-.bg::after{background:radial-gradient(circle,#00e5ff2e,transparent 65%)}
-html::before{background:radial-gradient(circle 300px at var(--mx) var(--my),#7c5cff44,transparent 70%)}
-html::after{background-image:linear-gradient(#00e5ff88 1px,transparent 1px),linear-gradient(90deg,#00e5ff88 1px,transparent 1px)}
-h1 span{background:linear-gradient(90deg,#00ec97,#00e5ff);color:#000}
-.card{border:1px solid #7c5cff55}
-.card:hover{border-color:#00e5ffaa;box-shadow:0 0 34px #7c5cff44}
-.track{stroke:#7c5cff30}
-.ring{stroke:#00ec97;filter:drop-shadow(0 0 10px #00ec97)}
-.saved{color:#ffb86b}
-.good{background:#00ec9714;border:1px solid #00ec9744;border-left:4px solid #00ec97}
-.good .tag{color:#00ec97}
-.bad{background:#ff4d6d14;border:1px dashed #ff4d6d77;border-left:4px solid #ff4d6d;opacity:1}
-.bad .tag{color:#ff4d6d}
-.why{color:#ff8fa3}
-.wallet .ok{color:#00ec97}
-.inputs input{border:1px solid #7c5cff66}
-.inputs input:focus{outline:none;border-color:#00e5ff}
-.inputs button{background:linear-gradient(90deg,#00ec97,#00e5ff);color:#000}
-.inputs button:hover{filter:brightness(1.15);background:linear-gradient(90deg,#00ec97,#00e5ff)}
-.tx{color:#00e5ff}
+
+/* monochrome overrides */
+body::before{background:radial-gradient(circle,#ffffff2e,transparent 65%)}
+body::after{background:linear-gradient(90deg,transparent,#ffffff77,transparent)}
+.bg::before{background-image:linear-gradient(#ffffff14 1px,transparent 1px),linear-gradient(90deg,#ffffff14 1px,transparent 1px)}
+.bg::after{background:radial-gradient(circle,#ffffff22,transparent 65%)}
+html::before{background:radial-gradient(circle 300px at var(--mx) var(--my),#ffffff2b,transparent 70%)}
+html::after{background-image:linear-gradient(#ffffff55 1px,transparent 1px),linear-gradient(90deg,#ffffff55 1px,transparent 1px)}
+h1 span{background:#fff;color:#000}
+.card{border:1px solid #ffffff44}
+.card:hover{border-color:#ffffffaa;box-shadow:0 0 34px #ffffff1f}
+.track{stroke:#ffffff22}
+.ring{stroke:#fff;filter:drop-shadow(0 0 8px #ffffffaa)}
+.saved{color:#ccc}
+.good{background:#ffffff14;border:1px solid #ffffff55;border-left:4px solid #fff}
+.good .tag{color:#fff}
+.bad{background:#000;border:1px dashed #ffffff44;border-left:4px solid #666;opacity:.75}
+.bad .tag{color:#999}
+.why{color:#bbb}
+.wallet .ok{color:#fff}
+.inputs input{border:1px solid #ffffff44}
+.inputs input:focus{outline:none;border-color:#fff}
+.inputs button{background:#fff;color:#000}
+.inputs button:hover{background:#ddd}
+.tx{color:#fff}

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Account, JsonRpcProvider, KeyPairSigner } from "near-api-js";
 import { NEAR } from "near-api-js/tokens";
 import Scene3D from "./Scene3D.jsx";
+import Report from "./Report.jsx";
 import "./App.css";
 
 const LIMIT = 10;
@@ -34,6 +35,7 @@ export default function App() {
   const [key, setKey] = useState("");
   const [merchant, setMerchant] = useState("");
   const [live, setLive] = useState(false);
+  const [tab, setTab] = useState("firewall");
   const spentRef = useRef(0);
   const idRef = useRef(0);
   const walletRef = useRef(null);
@@ -105,6 +107,12 @@ export default function App() {
       </motion.h1>
       <p className="sub">AI spending firewall for autonomous agent wallets on NEAR</p>
 
+      <div className="tabs">
+        <button className={tab === "firewall" ? "on" : ""} onClick={() => setTab("firewall")}>Firewall</button>
+        <button className={tab === "report" ? "on" : ""} onClick={() => setTab("report")}>NEAR Report</button>
+      </div>
+
+      {tab === "report" ? <Report /> : (<>
       <div className="card wallet">
         {live ? (
           <b className="ok">&#9679; Agent wallet connected (testnet): {acct}. Approved payments send real NEAR.</b>
@@ -165,6 +173,7 @@ export default function App() {
           </AnimatePresence>
         </div>
       </div>
+      </>)}
     </div>
   );
 }

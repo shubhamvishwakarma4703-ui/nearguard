@@ -1,0 +1,25 @@
+.tabs{display:flex;gap:8px;margin:0 0 20px}
+.tabs button{padding:10px 18px;border-radius:999px;border:1px solid #ffffff55;background:transparent;color:#fff;font-weight:700;cursor:pointer}
+.tabs button.on{background:#fff;color:#000}
+.report{display:grid;gap:18px}
+.rsec h3{margin:0 0 12px}
+.rsec h4{margin:18px 0 8px;letter-spacing:.08em;text-transform:uppercase;font-size:12px;opacity:.7}
+.lead{line-height:1.6;max-width:65ch;margin:0 0 10px;color:#ddd}
+.badge-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid #ffffff55;border-radius:999px;padding:4px 10px;color:#aaa}
+.badge.live{background:#fff;color:#000;border-color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{border:1px solid #ffffff2e;border-radius:12px;padding:12px;background:#ffffff08}
+.stat-l{font-size:12px;opacity:.6;letter-spacing:.06em;text-transform:uppercase}
+.stat-v{font-size:22px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.stat-s{font-size:12px;opacity:.55;margin-top:2px}
+.table{display:grid}
+.trow{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid #ffffff22}
+.trow:first-child{border-top:0}
+.tv{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;max-width:55%}
+.tv.left{font-weight:400;color:#ddd}
+.uses{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.use{border:1px solid #ffffff2e;border-radius:12px;padding:12px}
+.report ul{margin:0;padding-left:18px;line-height:1.7;color:#ddd}
+.src a{color:#fff}
+@media(max-width:720px){.trow{flex-direction:column;gap:4px}.tv{text-align:left;max-width:none}}

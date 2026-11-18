@@ -22,10 +22,10 @@ export default function Scene3D() {
       );
 
     const group = new THREE.Group();
-    const outer = wire(new THREE.IcosahedronGeometry(3, 1), 0.35, 0x7c5cff);
-    const inner = wire(new THREE.IcosahedronGeometry(1.5, 0), 0.9, 0x00e5ff);
-    const ring1 = wire(new THREE.TorusGeometry(4.3, 0.015, 8, 160), 0.8, 0x00ec97);
-    const ring2 = wire(new THREE.TorusGeometry(5.2, 0.015, 8, 160), 0.6, 0xff4d8d);
+    const outer = wire(new THREE.IcosahedronGeometry(3, 1), 0.35, 0xffffff);
+    const inner = wire(new THREE.IcosahedronGeometry(1.5, 0), 0.9, 0xdddddd);
+    const ring1 = wire(new THREE.TorusGeometry(4.3, 0.015, 8, 160), 0.8, 0xaaaaaa);
+    const ring2 = wire(new THREE.TorusGeometry(5.2, 0.015, 8, 160), 0.6, 0x777777);
     ring1.rotation.x = Math.PI / 2.4;
     ring2.rotation.y = Math.PI / 3;
     group.add(outer, inner, ring1, ring2);
@@ -45,7 +45,7 @@ export default function Scene3D() {
     pg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
     const stars = new THREE.Points(
       pg,
-      new THREE.PointsMaterial({ color: 0x9fe8ff, size: 0.05, transparent: true, opacity: 0.8 })
+      new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 })
     );
     scene.add(stars);
 
