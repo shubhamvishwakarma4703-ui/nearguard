@@ -1,9 +1,10 @@
-﻿import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, animate, useReducedMotion } from "framer-motion";
 import { Account, JsonRpcProvider, KeyPairSigner } from "near-api-js";
 import { NEAR } from "near-api-js/tokens";
 import Scene3D from "./Scene3D.jsx";
-import Report from "./Report.jsx";
+import Report from "./LiveReport.jsx";
+import Menu from "./Menu.jsx";
 import "./App.css";
 
 const LIMIT = 10;
@@ -21,13 +22,38 @@ function judge(r, spent) {
   let risk = 0;
   const why = [];
   if (!ALLOW.includes(r.to)) { risk += 50; why.push("Recipient not allowlisted"); }
-  if (/urgent|airdrop|all funds|claim/i.test(r.memo)) { risk += 40; why.push("Scam-like memo"); }
+  if (/urgent|airdrop|all funds|claim/i.test(r.memo)) { risk += 50; why.push("Scam-like memo"); }
   if (spent + r.amt > LIMIT) { risk += 60; why.push("Daily limit exceeded"); }
   risk = Math.min(risk, 100);
   return { risk, why, verdict: risk >= 50 ? "BLOCKED" : "APPROVED" };
 }
 
+function Counter({ value, decimals = 1 }) {
+  const [shown, setShown] = useState(value);
+  const fromRef = useRef(value);
+  useEffect(() => {
+    const c = animate(fromRef.current, value, {
+      duration: 0.8, ease: "easeOut",
+      onUpdate: (v) => { fromRef.current = v; setShown(v); },
+    });
+    return () => c.stop();
+  }, [value]);
+  return <>{shown.toFixed(decimals)}</>;
+}
+
+const rowMotion = (blocked, reduce) => ({
+  initial: { x: -60, opacity: 0, scale: 0.96 },
+  animate: reduce
+    ? { x: 0, opacity: 1, scale: 1 }
+    : blocked
+      ? { x: [-60, 14, -10, 6, -3, 0], opacity: 1, scale: 1 }
+      : { x: 0, opacity: 1, scale: [0.96, 1.03, 1] },
+  exit: { opacity: 0, x: 40, scale: 0.95 },
+  transition: { duration: 0.6, ease: "easeOut" },
+});
+
 export default function App() {
+  const reduce = useReducedMotion();
   const [spent, setSpent] = useState(0);
   const [feed, setFeed] = useState([]);
   const [saved, setSaved] = useState(0);
@@ -36,6 +62,9 @@ export default function App() {
   const [merchant, setMerchant] = useState("");
   const [live, setLive] = useState(false);
   const [tab, setTab] = useState("firewall");
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
   const spentRef = useRef(0);
   const idRef = useRef(0);
   const walletRef = useRef(null);
@@ -91,7 +120,7 @@ export default function App() {
 
   useEffect(() => {
     fire();
-    const t = setInterval(fire, 3500);
+    const t = setInterval(() => { if (!pausedRef.current) fire(); }, 3500);
     const reset = setInterval(() => { spentRef.current = 0; setSpent(0); }, 40000);
     return () => { clearInterval(t); clearInterval(reset); };
   }, []);
@@ -101,6 +130,10 @@ export default function App() {
 
   return (
     <div className="app">
+      <Menu
+        tab={tab} setTab={setTab} paused={paused} setPaused={setPaused}
+        allow={ALLOW} limit={LIMIT} spent={spent} live={live} acct={acct}
+      />
       <div className="bg" /><Scene3D />
       <motion.h1 initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
         Near<span>Guard</span>
@@ -108,14 +141,28 @@ export default function App() {
       <p className="sub">AI spending firewall for autonomous agent wallets on NEAR</p>
 
       <div className="tabs">
-        <button className={tab === "firewall" ? "on" : ""} onClick={() => setTab("firewall")}>Firewall</button>
-        <button className={tab === "report" ? "on" : ""} onClick={() => setTab("report")}>NEAR Report</button>
+        {[["firewall", "Firewall"], ["report", "NEAR Report"]].map(([id, label]) => (
+          <button key={id} className={tab === id ? "on" : ""} onClick={() => setTab(id)}>
+            {tab === id && (
+              <motion.span layoutId="tabpill" className="pill" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
+            )}
+            <span className="tab-label">{label}</span>
+          </button>
+        ))}
       </div>
 
+      <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={tab}
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.28 }}
+      >
       {tab === "report" ? <Report /> : (<>
       <div className="card wallet">
         {live ? (
-          <b className="ok">&#9679; Agent wallet connected (testnet): {acct}. Approved payments send real NEAR.</b>
+          <b className="ok"><span className="dot" /> Agent wallet connected (testnet): {acct}. Approved payments send real NEAR.</b>
         ) : (
           <>
             <b>Connect agent wallet (use a throwaway TESTNET account)</b>
@@ -131,7 +178,7 @@ export default function App() {
 
       <div className="grid">
         <motion.div className="card center" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <svg width="180" height="180" viewBox="0 0 180 180">
+          <svg width="180" height="180" viewBox="0 0 180 180" className="gauge">
             <circle cx="90" cy="90" r="70" className="track" />
             <motion.circle
               cx="90" cy="90" r="70" className="ring"
@@ -140,10 +187,17 @@ export default function App() {
               transition={{ duration: 0.8 }}
               transform="rotate(-90 90 90)"
             />
-            <text x="90" y="88" textAnchor="middle" className="big">{spent.toFixed(1)}</text>
+            <text x="90" y="88" textAnchor="middle" className="big"><Counter value={spent} /></text>
             <text x="90" y="110" textAnchor="middle" className="small">/ {LIMIT} NEAR daily</text>
           </svg>
-          <div className="saved">&#128737; {saved} NEAR protected from scams</div>
+          <div className="saved">
+            <motion.span
+              key={saved} className="shield"
+              initial={{ scale: 1 }} animate={reduce ? {} : { scale: [1, 1.5, 1], rotate: [0, -12, 0] }}
+              transition={{ duration: 0.5 }}
+            >&#128737;</motion.span>{" "}
+            <b><Counter value={saved} decimals={2} /></b> NEAR protected from scams
+          </div>
         </motion.div>
 
         <div className="card">
@@ -152,14 +206,15 @@ export default function App() {
             {feed.map((x) => (
               <motion.div
                 key={x.id} layout
-                initial={{ x: -60, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ opacity: 0 }}
+                {...rowMotion(x.verdict === "BLOCKED", reduce)}
+                whileHover={{ x: 4 }}
                 className={"row " + (x.verdict === "BLOCKED" ? "bad" : "good")}
               >
                 <div>
                   <b>{x.agent}</b> &rarr; {x.to}
                   <div className="memo">{x.amt} NEAR &middot; {x.memo}</div>
                   {x.why.length > 0 && <div className="why">&#9888; {x.why.join(" | ")}</div>}
-                  {x.tx === "pending" && <div className="memo">&#8987; sending on-chain...</div>}
+                  {x.tx === "pending" && <div className="memo pending">sending on-chain<span className="dots" /></div>}
                   {x.tx && x.tx !== "pending" && x.tx !== "error" && x.tx !== "sent" && (
                     <a className="tx" target="_blank" rel="noreferrer" href={"https://testnet.nearblocks.io/txns/" + x.tx}>
                       &#10003; on-chain tx: {x.tx.slice(0, 10)}...
@@ -167,13 +222,23 @@ export default function App() {
                   )}
                   {x.tx === "error" && <div className="why">tx failed: {x.err}</div>}
                 </div>
-                <div className="tag">{x.verdict}<small>risk {x.risk}</small></div>
+                <div className="tag">
+                  {x.verdict}<small>risk {x.risk}</small>
+                  <div className="meter">
+                    <motion.i
+                      initial={{ scaleX: 0 }} animate={{ scaleX: x.risk / 100 }}
+                      transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    />
+                  </div>
+                </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
       </div>
       </>)}
+      </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

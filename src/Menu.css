@@ -1,0 +1,20 @@
+.burger{position:fixed;top:16px;left:16px;z-index:60;width:46px;height:46px;border-radius:12px;border:1px solid #ffffff66;background:#000000cc;backdrop-filter:blur(10px);cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0;transition:border-color .2s,background .2s}
+.burger:hover{border-color:#fff;background:#111}
+.burger:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.burger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform .3s,opacity .2s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.scrim{position:fixed;inset:0;z-index:50;background:#000000a6}
+.drawer{position:fixed;top:0;left:0;bottom:0;z-index:55;width:min(340px,86vw);background:#050505;border-right:1px solid #ffffff44;padding:76px 20px 28px;overflow-y:auto;color:#fff;box-sizing:border-box}
+.d-brand{font-size:26px;font-weight:700;letter-spacing:-1px;margin-bottom:6px}
+.d-brand span{background:#fff;color:#000;padding:0 8px;border-radius:6px;margin-left:3px}
+.drawer h5{margin:22px 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.55}
+.d-item{display:flex;justify-content:space-between;align-items:center;width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:#fff;font:inherit;text-align:left;text-decoration:none;cursor:pointer;transition:background .2s,border-color .2s,padding-left .2s}
+.d-item:hover{background:#ffffff14;border-color:#ffffff44;padding-left:16px}
+.d-item.on{background:#fff;color:#000;font-weight:700}
+.d-item small{opacity:.6;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.d-note{font-size:13px;line-height:1.6;opacity:.75;padding:6px 12px}
+.drawer ul{margin:0;padding-left:30px;line-height:1.7;font-size:14px;color:#ddd}
+.drawer ul.mono{font-family:Menlo,monospace;font-size:12.5px}
+

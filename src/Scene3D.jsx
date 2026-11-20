@@ -22,9 +22,9 @@ export default function Scene3D() {
       );
 
     const group = new THREE.Group();
-    const outer = wire(new THREE.IcosahedronGeometry(3, 1), 0.35, 0xffffff);
-    const inner = wire(new THREE.IcosahedronGeometry(1.5, 0), 0.9, 0xdddddd);
-    const ring1 = wire(new THREE.TorusGeometry(4.3, 0.015, 8, 160), 0.8, 0xaaaaaa);
+    const outer = wire(new THREE.IcosahedronGeometry(3, 1), 0.35, 0x8fb4ff);
+    const inner = wire(new THREE.IcosahedronGeometry(1.5, 0), 0.9, 0x5ce1ff);
+    const ring1 = wire(new THREE.TorusGeometry(4.3, 0.015, 8, 160), 0.8, 0x3ddc97);
     const ring2 = wire(new THREE.TorusGeometry(5.2, 0.015, 8, 160), 0.6, 0x777777);
     ring1.rotation.x = Math.PI / 2.4;
     ring2.rotation.y = Math.PI / 3;

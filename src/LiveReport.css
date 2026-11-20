@@ -23,3 +23,21 @@
 .report ul{margin:0;padding-left:18px;line-height:1.7;color:#ddd}
 .src a{color:#fff}
 @media(max-width:720px){.trow{flex-direction:column;gap:4px}.tv{text-align:left;max-width:none}}
+
+/* animation */
+.tabs button{position:relative;background:transparent;overflow:hidden;transition:color .25s}
+.tabs button.on{background:transparent;color:#000}
+.tabs .pill{position:absolute;inset:0;background:#fff;border-radius:999px;z-index:0}
+.tab-label{position:relative;z-index:1}
+.stat{transition:transform .2s,border-color .2s,background .2s}
+.stat:hover{transform:translateY(-3px);border-color:#ffffffaa;background:#ffffff14}
+.use{transition:transform .2s,border-color .2s}
+.use:hover{transform:translateY(-3px);border-color:#ffffffaa}
+.trow{transition:background .2s,padding-left .2s}
+.trow:hover{background:#ffffff0a;padding-left:8px}
+.badge.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#000;margin-right:6px;animation:pulseb 1.4s ease-out infinite}
+@keyframes pulseb{0%{box-shadow:0 0 0 0 #000a}100%{box-shadow:0 0 0 7px #0000}}
+.stat-v{animation:popin .6s ease-out both}
+@keyframes popin{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+.stats .stat:nth-child(2) .stat-v{animation-delay:.05s}.stats .stat:nth-child(3) .stat-v{animation-delay:.1s}.stats .stat:nth-child(4) .stat-v{animation-delay:.15s}
+.stats .stat:nth-child(5) .stat-v{animation-delay:.2s}.stats .stat:nth-child(6) .stat-v{animation-delay:.25s}.stats .stat:nth-child(7) .stat-v{animation-delay:.3s}.stats .stat:nth-child(8) .stat-v{animation-delay:.35s}
