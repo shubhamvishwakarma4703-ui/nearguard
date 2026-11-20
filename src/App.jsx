@@ -5,6 +5,7 @@ import { NEAR } from "near-api-js/tokens";
 import Scene3D from "./Scene3D.jsx";
 import Report from "./LiveReport.jsx";
 import Menu from "./Menu.jsx";
+import { StatsBar, AgentBoard, Simulator } from "./Extras.jsx";
 import "./App.css";
 
 const LIMIT = 10;
@@ -63,6 +64,11 @@ export default function App() {
   const [live, setLive] = useState(false);
   const [tab, setTab] = useState("firewall");
   const [paused, setPaused] = useState(false);
+  const [frozen, setFrozen] = useState(false);
+  const [stats, setStats] = useState({ ok: 0, bad: 0 });
+  const [agents, setAgents] = useState({});
+  const frozenRef = useRef(false);
+  useEffect(() => { frozenRef.current = frozen; }, [frozen]);
   const pausedRef = useRef(false);
   useEffect(() => { pausedRef.current = paused; }, [paused]);
   const spentRef = useRef(0);
@@ -106,17 +112,34 @@ export default function App() {
     });
   };
 
-  const fire = () => {
-    const r = POOL[Math.floor(Math.random() * POOL.length)];
-    const j = judge(r, spentRef.current);
+  const processRequest = (r) => {
+    let j = judge(r, spentRef.current);
+    if (frozenRef.current) {
+      j = { risk: 100, verdict: "BLOCKED", why: ["Firewall frozen by operator", ...j.why] };
+    }
     const id = idRef.current++;
-    if (j.verdict === "APPROVED") {
+    const approved = j.verdict === "APPROVED";
+    if (approved) {
       spentRef.current += r.amt;
       setSpent(spentRef.current);
       sendReal(id, r.amt);
     } else setSaved((s) => +(s + r.amt).toFixed(2));
+    setStats((st) => ({ ok: st.ok + (approved ? 1 : 0), bad: st.bad + (approved ? 0 : 1) }));
+    setAgents((a) => {
+      const p = a[r.agent] || { ok: 0, bad: 0, spent: 0 };
+      return {
+        ...a,
+        [r.agent]: {
+          ok: p.ok + (approved ? 1 : 0),
+          bad: p.bad + (approved ? 0 : 1),
+          spent: p.spent + (approved ? r.amt : 0),
+        },
+      };
+    });
     setFeed((f) => [{ ...r, ...j, id }, ...f].slice(0, 6));
   };
+
+  const fire = () => processRequest(POOL[Math.floor(Math.random() * POOL.length)]);
 
   useEffect(() => {
     fire();
@@ -160,6 +183,8 @@ export default function App() {
         transition={{ duration: 0.28 }}
       >
       {tab === "report" ? <Report /> : (<>
+      <StatsBar stats={stats} frozen={frozen} setFrozen={setFrozen} />
+
       <div className="card wallet">
         {live ? (
           <b className="ok"><span className="dot" /> Agent wallet connected (testnet): {acct}. Approved payments send real NEAR.</b>
@@ -235,6 +260,10 @@ export default function App() {
             ))}
           </AnimatePresence>
         </div>
+      </div>
+      <div className="ex-row2">
+        <Simulator judge={judge} spent={spent} frozen={frozen} onSend={processRequest} />
+        <AgentBoard agents={agents} limit={LIMIT} />
       </div>
       </>)}
       </motion.div>
